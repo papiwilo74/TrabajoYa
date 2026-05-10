@@ -1,18 +1,40 @@
-import { Outlet, Link } from 'react-router-dom';
+/* frontend/src/layouts/EmployerLayout.jsx */
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import styles from './Layout.module.css';
 
 export const EmployerLayout = () => {
+  const { pathname } = useLocation();
+
   return (
-    <div>
-      <nav style={{ padding: '1rem', backgroundColor: '#e8f5e9' }}>
-        <h2>TrabajoYa - Portal de Empresas</h2>
-        <ul style={{ display: 'flex', gap: '1rem', listStyle: 'none' }}>
-          <li><Link to="/empresa/dashboard">Mi Panel</Link></li>
-          <li><Link to="/empresa/publicar">Publicar Vacante</Link></li>
-        </ul>
-      </nav>
-      
-      <main style={{ padding: '2rem' }}>
-        <Outlet /> 
+    <div className={styles.shell}>
+      <header className={`${styles.header} ${styles.headerEmployer}`}>
+        <Link to="/" className={styles.logo}>
+          <span className={styles.logoMark}>TY</span>
+          <span className={styles.logoText}>TrabajoYa</span>
+        </Link>
+
+        <nav className={styles.nav}>
+          <Link
+            to="/empresa/dashboard"
+            className={`${styles.navLink} ${pathname.includes('dashboard') ? styles.active : ''}`}
+          >
+            Mi panel
+          </Link>
+          <Link
+            to="/empresa/publicar"
+            className={`${styles.navLink} ${pathname.includes('publicar') ? styles.active : ''}`}
+          >
+            Publicar vacante
+          </Link>
+        </nav>
+
+        <Link to="/candidato/buscar" className={`${styles.ctaBtn} ${styles.ctaBtnOutline}`}>
+          Ver empleos
+        </Link>
+      </header>
+
+      <main className={styles.main}>
+        <Outlet />
       </main>
     </div>
   );

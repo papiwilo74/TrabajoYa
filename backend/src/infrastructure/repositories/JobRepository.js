@@ -2,24 +2,36 @@
 
 export class JobRepository {
   constructor() {
-    // Arreglo para simular la tabla de vacantes
     this.jobs = [];
   }
 
-  // Método para que un empleador publique una vacante
+  // Guarda una vacante (compatible con la interfaz TS: devuelve la vacante)
   save(job) {
     this.jobs.push(job);
-    console.log(`Vacante '${job.title}' publicada con éxito.`);
     return job;
   }
 
-  // Método para obtener todas las vacantes (para la pantalla de búsqueda)
+  // Devuelve todas las vacantes abiertas
   findAll() {
-    return this.jobs;
+    return this.jobs.filter(job => job.status === 'open');
   }
 
-  // Método para filtrar empleos por tipo (formal o informal)
-  findByType(type) {
-    return this.jobs.filter(job => job.type === type);
+  // Busca por ID
+  findById(id) {
+    return this.jobs.find(job => job.id === id) ?? null;
+  }
+
+  // Filtra por ciudad (para escalar con Supabase luego)
+  findByLocation(location) {
+    return this.jobs.filter(
+      job => job.location.toLowerCase().includes(location.toLowerCase()) && job.status === 'open'
+    );
+  }
+
+  // Filtra por categoría
+  findByCategory(category) {
+    return this.jobs.filter(
+      job => job.category?.toLowerCase() === category.toLowerCase() && job.status === 'open'
+    );
   }
 }

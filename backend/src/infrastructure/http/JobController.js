@@ -6,28 +6,35 @@ export class JobController {
     this.getJobsUseCase = getJobsUseCase;
   }
 
-  // Atiende la petición de publicar vacante (POST)
+  // POST /api/jobs
   createJob(req, res) {
     try {
-      const jobData = req.body; // Aquí viene la info del formulario verde
-      const newJob = this.createJobUseCase.execute(jobData);
-      
-      // Respondemos con código 201 (Creado) y los datos
+      const newJob = this.createJobUseCase.execute(req.body);
       res.status(201).json(newJob);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
 
-  // Atiende la petición de listar vacantes (GET)
+  // GET /api/jobs?location=Barranquilla&category=tecnología
   getJobs(req, res) {
     try {
-      const jobs = this.getJobsUseCase.execute();
-      
-      // Respondemos con código 200 (OK) y la lista
+      const { location, category } = req.query;
+      const jobs = this.getJobsUseCase.execute({ location, category });
       res.status(200).json(jobs);
     } catch (error) {
-      res.status(500).json({ error: 'Error interno del servidor' });
+      res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+  }
+
+  // GET /api/jobs/:id
+  getJobById(req, res) {
+    try {
+      const job = this.getJobsUseCase.jobRepository?.findById(req.params.id);
+      if (!job) return res.status(404).json({ error: 'Vacante no encontrada.' });
+      res.status(200).json(job);
+    } catch (error) {
+      res.status(500).json({ error: 'Error interno del servidor.' });
     }
   }
 }

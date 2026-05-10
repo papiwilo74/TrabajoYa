@@ -5,9 +5,13 @@ export class GetJobs {
     this.jobRepository = jobRepository;
   }
 
-  // Ejecutamos la acción de buscar todos los empleos
-  execute() {
-    // Aquí podríamos agregar lógica para filtrar (ej. mostrar solo los "abiertos")
+  execute({ location, category } = {}) {
+    if (location) {
+      return this.jobRepository.findByLocation(location);
+    }
+    if (category) {
+      return this.jobRepository.findByCategory(category);
+    }
     return this.jobRepository.findAll();
   }
 }
