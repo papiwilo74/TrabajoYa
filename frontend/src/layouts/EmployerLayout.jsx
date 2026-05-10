@@ -1,9 +1,11 @@
-/* frontend/src/layouts/EmployerLayout.jsx */
+// frontend/src/layouts/EmployerLayout.jsx
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import styles from './Layout.module.css';
 
 export const EmployerLayout = () => {
   const { pathname } = useLocation();
+  const { theme, toggle } = useTheme();
 
   return (
     <div className={styles.shell}>
@@ -14,19 +16,17 @@ export const EmployerLayout = () => {
         </Link>
 
         <nav className={styles.nav}>
-          <Link
-            to="/empresa/dashboard"
-            className={`${styles.navLink} ${pathname.includes('dashboard') ? styles.active : ''}`}
-          >
+          <Link to="/empresa/dashboard" className={`${styles.navLink} ${pathname.includes('dashboard') ? styles.active : ''}`}>
             Mi panel
           </Link>
-          <Link
-            to="/empresa/publicar"
-            className={`${styles.navLink} ${pathname.includes('publicar') ? styles.active : ''}`}
-          >
+          <Link to="/empresa/publicar" className={`${styles.navLink} ${pathname.includes('publicar') ? styles.active : ''}`}>
             Publicar vacante
           </Link>
         </nav>
+
+        <button className={styles.themeBtn} onClick={toggle} aria-label="Cambiar tema" title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
 
         <Link to="/candidato/buscar" className={`${styles.ctaBtn} ${styles.ctaBtnOutline}`}>
           Ver empleos
