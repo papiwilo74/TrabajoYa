@@ -3,9 +3,10 @@ import { JobDetailModal } from '../components/JobDetailModal';
 import { ApplicationModal as ApplyModal } from '../components/ApplicationModal';
 import styles from './JobSearchPage.module.css';
 
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
 const CATEGORIES = ['Todos', 'Tecnología', 'Ventas', 'Construcción', 'Salud', 'Educación', 'General'];
 
-// Logos de empresa por inicial (placeholder con colores)
 const AVATAR_COLORS = ['#FF5733','#1A1F3C','#7C3AED','#0891B2','#059669','#D97706','#DB2777'];
 const getAvatarColor = (title) => AVATAR_COLORS[title.charCodeAt(0) % AVATAR_COLORS.length];
 
@@ -31,7 +32,6 @@ const shareJob = async (job) => {
   if (navigator.share) {
     try { await navigator.share({ title: job.title, text, url }); return; } catch {}
   }
-  // Fallback: copiar al portapapeles
   await navigator.clipboard.writeText(`${text}\n${url}`);
   alert('¡Enlace copiado! También puedes compartir por WhatsApp:\nhttps://wa.me/?text=' + encodeURIComponent(text));
 };
@@ -45,7 +45,6 @@ const JobCard = ({ job, query, onViewDetail, onApply, index }) => (
     onKeyDown={e => e.key === 'Enter' && onViewDetail(job)}
   >
     <div className={styles.cardTop}>
-      {/* Logo/avatar de empresa */}
       <div className={styles.avatar} style={{ background: getAvatarColor(job.title) }}>
         {job.title.charAt(0).toUpperCase()}
       </div>
@@ -89,12 +88,12 @@ export const JobSearchPage = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
-  const [salaryRange, setSalaryRange] = useState(0); // 0 = sin filtro
+  const [salaryRange, setSalaryRange] = useState(0);
   const [selectedJob, setSelectedJob] = useState(null);
   const [applyJob, setApplyJob] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/jobs')
+    fetch(`${API_URL}/api/jobs`)
       .then(res => res.json())
       .then(data => { setJobs(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -121,7 +120,6 @@ export const JobSearchPage = () => {
 
   return (
     <div className={styles.page}>
-      {/* Hero */}
       <section className={styles.hero}>
         <h1 className={styles.heroTitle}>
           Encuentra tu próximo<br />
@@ -148,7 +146,6 @@ export const JobSearchPage = () => {
         )}
       </section>
 
-      {/* Filtros categoría con contadores */}
       <div className={styles.filters}>
         {CATEGORIES.map(cat => {
           const count = countByCategory(cat);
@@ -165,7 +162,6 @@ export const JobSearchPage = () => {
         })}
       </div>
 
-      {/* Filtro de salario */}
       {maxSalary > 0 && (
         <div className={styles.salaryFilter}>
           <label className={styles.salaryLabel}>

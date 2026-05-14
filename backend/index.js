@@ -1,4 +1,5 @@
 // backend/index.js
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 
@@ -13,20 +14,20 @@ app.use(cors());
 app.use(express.json());
 
 // --- Inyección de dependencias ---
-const jobRepository = new JobRepository();
+const jobRepository  = new JobRepository();
 const createJobUseCase = new CreateJob(jobRepository);
-const getJobsUseCase = new GetJobs(jobRepository);
-const jobController = new JobController(createJobUseCase, getJobsUseCase);
+const getJobsUseCase   = new GetJobs(jobRepository);
+const jobController    = new JobController(createJobUseCase, getJobsUseCase);
 
 // Adjuntamos el repositorio al use case para poder usarlo en getJobById
 getJobsUseCase.jobRepository = jobRepository;
 
 // --- Rutas ---
-app.get('/api/jobs', (req, res) => jobController.getJobs(req, res));
-app.post('/api/jobs', (req, res) => jobController.createJob(req, res));
+app.get('/api/jobs',     (req, res) => jobController.getJobs(req, res));
+app.post('/api/jobs',    (req, res) => jobController.createJob(req, res));
 app.get('/api/jobs/:id', (req, res) => jobController.getJobById(req, res));
 
-// Health check (útil para Vercel/Railway)
+// Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT ?? 3000;

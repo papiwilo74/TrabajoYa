@@ -3,13 +3,13 @@
 export class JobController {
   constructor(createJobUseCase, getJobsUseCase) {
     this.createJobUseCase = createJobUseCase;
-    this.getJobsUseCase = getJobsUseCase;
+    this.getJobsUseCase   = getJobsUseCase;
   }
 
   // POST /api/jobs
-  createJob(req, res) {
+  async createJob(req, res) {
     try {
-      const newJob = this.createJobUseCase.execute(req.body);
+      const newJob = await this.createJobUseCase.execute(req.body);
       res.status(201).json(newJob);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -17,10 +17,10 @@ export class JobController {
   }
 
   // GET /api/jobs?location=Barranquilla&category=tecnología
-  getJobs(req, res) {
+  async getJobs(req, res) {
     try {
       const { location, category } = req.query;
-      const jobs = this.getJobsUseCase.execute({ location, category });
+      const jobs = await this.getJobsUseCase.execute({ location, category });
       res.status(200).json(jobs);
     } catch (error) {
       res.status(500).json({ error: 'Error interno del servidor.' });
@@ -28,9 +28,9 @@ export class JobController {
   }
 
   // GET /api/jobs/:id
-  getJobById(req, res) {
+  async getJobById(req, res) {
     try {
-      const job = this.getJobsUseCase.jobRepository?.findById(req.params.id);
+      const job = await this.getJobsUseCase.jobRepository?.findById(req.params.id);
       if (!job) return res.status(404).json({ error: 'Vacante no encontrada.' });
       res.status(200).json(job);
     } catch (error) {

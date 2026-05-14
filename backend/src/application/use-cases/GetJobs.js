@@ -5,13 +5,9 @@ export class GetJobs {
     this.jobRepository = jobRepository;
   }
 
-  execute({ location, category } = {}) {
-    if (location) {
-      return this.jobRepository.findByLocation(location);
-    }
-    if (category) {
-      return this.jobRepository.findByCategory(category);
-    }
-    return this.jobRepository.findAll();
+  async execute({ location, category } = {}) {
+    if (location) return await this.jobRepository.findByLocation(location);
+    if (category) return await this.jobRepository.findByCategory(category);
+    return await this.jobRepository.findAll();
   }
 }

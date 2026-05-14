@@ -1,37 +1,89 @@
 // backend/src/infrastructure/repositories/JobRepository.js
+import { supabase } from '../supabase/client.js';
 
 export class JobRepository {
-  constructor() {
-    this.jobs = [];
+
+  async save(job) {
+    const { data, error } = await supabase
+      .from('jobs')
+      .insert([{
+        id:          job.id,
+        employer_id: job.employerId,
+        title:       job.title,
+        description: job.description,
+        type:        job.type,
+        category:    job.category,
+        location:    job.location,
+        salary:      job.salary,
+        status:      job.status,
+        created_at:  job.createdAt,
+      }])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return this._map(data);
   }
 
-  // Guarda una vacante (compatible con la interfaz TS: devuelve la vacante)
-  save(job) {
-    this.jobs.push(job);
-    return job;
+  async findAll() {
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('status', 'open')
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data.map(this._map);
   }
 
-  // Devuelve todas las vacantes abiertas
-  findAll() {
-    return this.jobs.filter(job => job.status === 'open');
+  async findById(id) {
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) return null;
+    return this._map(data);
   }
 
-  // Busca por ID
-  findById(id) {
-    return this.jobs.find(job => job.id === id) ?? null;
+  async findByLocation(location) {
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('status', 'open')
+      .ilike('location', `%${location}%`)
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data.map(this._map);
   }
 
-  // Filtra por ciudad (para escalar con Supabase luego)
-  findByLocation(location) {
-    return this.jobs.filter(
-      job => job.location.toLowerCase().includes(location.toLowerCase()) && job.status === 'open'
-    );
+  async findByCategory(category) {
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('status', 'open')
+      .eq('category', category.toLowerCase())
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data.map(this._map);
   }
 
-  // Filtra por categoría
-  findByCategory(category) {
-    return this.jobs.filter(
-      job => job.category?.toLowerCase() === category.toLowerCase() && job.status === 'open'
-    );
+  // Convierte snake_case de Supabase a camelCase para el resto del código
+  _map(row) {
+    return {
+      id:          row.id,
+      employerId:  row.employer_id,
+      title:       row.title,
+      description: row.description,
+      type:        row.type,
+      category:    row.category,
+      location:    row.location,
+      salary:      row.salary,
+      status:      row.status,
+      createdAt:   row.created_at,
+    };
   }
 }

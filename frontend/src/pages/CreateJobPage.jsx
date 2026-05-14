@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import styles from './CreateJobPage.module.css';
 
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const CATEGORIES = ['general', 'tecnología', 'ventas', 'construcción', 'salud', 'educación', 'logística', 'gastronomía'];
 
 export const CreateJobPage = () => {
@@ -9,7 +10,7 @@ export const CreateJobPage = () => {
     title: '', description: '', type: 'formal',
     category: 'general', location: 'Barranquilla', salary: ''
   });
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [status, setStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (e) => {
@@ -22,7 +23,7 @@ export const CreateJobPage = () => {
     setErrorMsg('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/jobs', {
+      const res = await fetch(`${API_URL}/api/jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -44,7 +45,6 @@ export const CreateJobPage = () => {
 
   return (
     <div className={styles.page}>
-      {/* Columna izquierda: info */}
       <aside className={styles.sidebar}>
         <div className={styles.sideInner}>
           <span className={styles.sideLabel}>Para empresas</span>
@@ -60,7 +60,6 @@ export const CreateJobPage = () => {
         </div>
       </aside>
 
-      {/* Formulario */}
       <div className={styles.formWrap}>
         <h1 className={styles.formTitle}>Nueva vacante</h1>
         <p className={styles.formSub}>Completa los datos para publicar tu oferta de empleo.</p>
@@ -80,23 +79,11 @@ export const CreateJobPage = () => {
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>Título del cargo *</label>
-              <input
-                className={styles.input}
-                type="text" name="title"
-                value={formData.title} onChange={handleChange}
-                placeholder="Ej. Desarrollador Frontend"
-                required
-              />
+              <input className={styles.input} type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Ej. Desarrollador Frontend" required />
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Ubicación *</label>
-              <input
-                className={styles.input}
-                type="text" name="location"
-                value={formData.location} onChange={handleChange}
-                placeholder="Ej. Barranquilla, Norte"
-                required
-              />
+              <input className={styles.input} type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Ej. Barranquilla, Norte" required />
             </div>
           </div>
 
@@ -122,33 +109,16 @@ export const CreateJobPage = () => {
             <label className={styles.label}>Salario mensual (opcional)</label>
             <div className={styles.salaryWrap}>
               <span className={styles.salaryPrefix}>$</span>
-              <input
-                className={`${styles.input} ${styles.salaryInput}`}
-                type="number" name="salary"
-                value={formData.salary} onChange={handleChange}
-                placeholder="Dejar vacío = A convenir"
-                min="0"
-              />
+              <input className={`${styles.input} ${styles.salaryInput}`} type="number" name="salary" value={formData.salary} onChange={handleChange} placeholder="Dejar vacío = A convenir" min="0" />
             </div>
           </div>
 
           <div className={styles.field}>
             <label className={styles.label}>Descripción del cargo *</label>
-            <textarea
-              className={`${styles.input} ${styles.textarea}`}
-              name="description"
-              value={formData.description} onChange={handleChange}
-              placeholder="Describe las responsabilidades, requisitos y beneficios…"
-              rows={5}
-              required
-            />
+            <textarea className={`${styles.input} ${styles.textarea}`} name="description" value={formData.description} onChange={handleChange} placeholder="Describe las responsabilidades, requisitos y beneficios…" rows={5} required />
           </div>
 
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={status === 'loading'}
-          >
+          <button type="submit" className={styles.submitBtn} disabled={status === 'loading'}>
             {status === 'loading' ? 'Publicando…' : 'Publicar vacante →'}
           </button>
         </form>
