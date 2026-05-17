@@ -71,14 +71,14 @@ export const JobDetailModal = ({ job, onClose, onApply }) => {
         {/* Quick stats */}
         <div className={styles.statsRow}>
           <div className={styles.stat}>
-            <span className={styles.statIcon}>📍</span>
+            <span className={styles.statIcon}></span>
             <div>
               <p className={styles.statLabel}>Ubicación</p>
               <p className={styles.statValue}>{job.location}</p>
             </div>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statIcon}>💰</span>
+            <span className={styles.statIcon}></span>
             <div>
               <p className={styles.statLabel}>Salario</p>
               <p className={styles.statValue}>
@@ -87,7 +87,7 @@ export const JobDetailModal = ({ job, onClose, onApply }) => {
             </div>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statIcon}>📋</span>
+            <span className={styles.statIcon}></span>
             <div>
               <p className={styles.statLabel}>Contrato</p>
               <p className={styles.statValue}>

@@ -27,7 +27,7 @@ const timeAgo = (date) => {
 };
 
 const shareJob = async (job) => {
-  const text = `🔥 Vacante: ${job.title} en ${job.location} — TrabajoYa`;
+  const text = ` Vacante: ${job.title} en ${job.location} — TrabajoYa`;
   const url = window.location.href;
   if (navigator.share) {
     try { await navigator.share({ title: job.title, text, url }); return; } catch {}
@@ -58,7 +58,7 @@ const JobCard = ({ job, query, onViewDetail, onApply, index }) => (
           onClick={e => { e.stopPropagation(); shareJob(job); }}
           title="Compartir vacante"
         >
-          🔗
+          
         </button>
       </div>
     </div>
@@ -68,7 +68,7 @@ const JobCard = ({ job, query, onViewDetail, onApply, index }) => (
 
     <div className={styles.cardFooter}>
       <div className={styles.cardTags}>
-        <span className={styles.tag}>📍 <Highlight text={job.location} query={query} /></span>
+        <span className={styles.tag}> <Highlight text={job.location} query={query} /></span>
         {job.category && job.category !== 'general' && <span className={styles.tag}>{job.category}</span>}
       </div>
       <div className={styles.cardRight}>
@@ -165,7 +165,7 @@ export const JobSearchPage = () => {
       {maxSalary > 0 && (
         <div className={styles.salaryFilter}>
           <label className={styles.salaryLabel}>
-            💰 Salario mínimo:
+             Salario mínimo:
             <strong> {salaryRange === 0 ? 'Todos' : `$${Number(salaryRange).toLocaleString('es-CO')}`}</strong>
           </label>
           <input
@@ -197,7 +197,7 @@ export const JobSearchPage = () => {
         </div>
       ) : filtered.length === 0 ? (
         <div className={styles.empty}>
-          <span className={styles.emptyIcon}>🗂️</span>
+          <span className={styles.emptyIcon}></span>
           <p>No hay vacantes que coincidan.</p>
           <button className={styles.emptyBtn} onClick={() => { setSearch(''); setActiveCategory('Todos'); setSalaryRange(0); }}>
             Ver todas

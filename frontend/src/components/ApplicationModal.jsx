@@ -55,7 +55,7 @@ export const ApplicationModal = ({ job, onClose }) => {
                   <span className={styles.metaTag}>📍 {job.location}</span>
                   {job.salary && (
                     <span className={styles.metaTag}>
-                      💰 ${Number(job.salary).toLocaleString('es-CO')}
+                       ${Number(job.salary).toLocaleString('es-CO')}
                     </span>
                   )}
                   <span className={`${styles.metaTag} ${job.type === 'formal' ? styles.formal : styles.informal}`}>
@@ -127,7 +127,7 @@ export const ApplicationModal = ({ job, onClose }) => {
 
               <div className={styles.formFooter}>
                 <p className={styles.privacy}>
-                  🔒 Tu información es privada y solo se comparte con el empleador.
+                   Tu información es privada y solo se comparte con el empleador.
                 </p>
                 <button
                   type="submit"
@@ -146,14 +146,14 @@ export const ApplicationModal = ({ job, onClose }) => {
         ) : (
           /* Success state */
           <div className={styles.success}>
-            <div className={styles.successIcon}>🎉</div>
+            <div className={styles.successIcon}></div>
             <h2 className={styles.successTitle}>¡Postulación enviada!</h2>
             <p className={styles.successText}>
               Tu aplicación para <strong>{job.title}</strong> fue recibida con éxito.
               El empleador se pondrá en contacto contigo pronto.
             </p>
             <div className={styles.successCard}>
-              <span className={styles.successLabel}>📧 Confirmación enviada a</span>
+              <span className={styles.successLabel}> Confirmación enviada a</span>
               <span className={styles.successEmail}>{formData.email}</span>
             </div>
             <button className={styles.doneBtn} onClick={onClose}>
