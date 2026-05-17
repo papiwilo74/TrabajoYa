@@ -1,5 +1,5 @@
 // backend/src/infrastructure/repositories/JobRepository.js
-import { supabase } from '../supabase/client.js';
+import { supabase } from '../supabaseClient.js'; // ✓ corregido: era '../supabase/client.js'
 
 export class JobRepository {
 
