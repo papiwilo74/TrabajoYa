@@ -128,7 +128,7 @@ export const JobSearchPage = () => {
         <p className={styles.heroSub}>Vacantes formales e informales actualizadas en tiempo real.</p>
 
         <div className={styles.searchBar}>
-          <span className={styles.searchIcon}>🔍</span>
+          <span className={styles.searchIcon}></span>
           <input
             type="text" placeholder="Cargo, empresa o ciudad…"
             value={search} onChange={e => setSearch(e.target.value)}

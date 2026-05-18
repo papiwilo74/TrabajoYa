@@ -53,9 +53,9 @@ export const CreateJobPage = () => {
             Miles de candidatos activos en Barranquilla buscan oportunidades como la tuya.
           </p>
           <ul className={styles.sideList}>
-            <li>✅ Publica en minutos</li>
-            <li>✅ Llega a candidatos verificados</li>
-            <li>✅ Empleos formales e informales</li>
+            <li> Publica en minutos</li>
+            <li> Llega a candidatos verificados</li>
+            <li> Empleos formales e informales</li>
           </ul>
         </div>
       </aside>
@@ -66,12 +66,12 @@ export const CreateJobPage = () => {
 
         {status === 'success' && (
           <div className={styles.alert + ' ' + styles.alertSuccess}>
-            🎉 ¡Vacante publicada con éxito! Ya está visible para candidatos.
+             ¡Vacante publicada con éxito! Ya está visible para candidatos.
           </div>
         )}
         {status === 'error' && (
           <div className={styles.alert + ' ' + styles.alertError}>
-            ⚠️ {errorMsg}
+             {errorMsg}
           </div>
         )}
 

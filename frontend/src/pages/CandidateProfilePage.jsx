@@ -44,7 +44,7 @@ export const CandidateProfilePage = () => {
             {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
           </div>
           <h2 className={styles.profileName}>{profile.name || 'Tu nombre'}</h2>
-          <p className={styles.profileCity}>📍 {profile.city}</p>
+          <p className={styles.profileCity}> {profile.city}</p>
         </div>
 
         <div className={styles.completenessWrap}>

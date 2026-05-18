@@ -51,10 +51,10 @@ export const EmployerDashboardPage = () => {
       </div>
 
       <div className={styles.statsGrid}>
-        <StatCard icon="📋" label="Vacantes activas"    value={totalJobs}   sub="en este momento"  color="#FF5733" />
-        <StatCard icon="✅" label="Contratos formales"  value={formalJobs}  sub={`${totalJobs > 0 ? Math.round(formalJobs/totalJobs*100) : 0}% del total`}   color="#2E7D32" />
-        <StatCard icon="🤝" label="Contratos informales" value={informalJobs} sub={`${totalJobs > 0 ? Math.round(informalJobs/totalJobs*100) : 0}% del total`} color="#E65100" />
-        <StatCard icon="💰" label="Salario promedio"   value={avgSalary > 0 ? `$${Math.round(avgSalary).toLocaleString('es-CO')}` : '—'} sub="de vacantes con salario" color="#1A1F3C" />
+        <StatCard icon="" label="Vacantes activas"    value={totalJobs}   sub="en este momento"  color="#FF5733" />
+        <StatCard icon="" label="Contratos formales"  value={formalJobs}  sub={`${totalJobs > 0 ? Math.round(formalJobs/totalJobs*100) : 0}% del total`}   color="#2E7D32" />
+        <StatCard icon="" label="Contratos informales" value={informalJobs} sub={`${totalJobs > 0 ? Math.round(informalJobs/totalJobs*100) : 0}% del total`} color="#E65100" />
+        <StatCard icon="" label="Salario promedio"   value={avgSalary > 0 ? `$${Math.round(avgSalary).toLocaleString('es-CO')}` : '—'} sub="de vacantes con salario" color="#1A1F3C" />
       </div>
 
       {categories.length > 0 && (
