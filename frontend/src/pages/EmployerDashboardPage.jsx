@@ -98,7 +98,7 @@ export const EmployerDashboardPage = () => {
                 </div>
                 <div className={styles.jobInfo}>
                   <p className={styles.jobTitle}>{job.title}</p>
-                  <p className={styles.jobMeta}>📍 {job.location} · {job.category} · {timeAgo(job.createdAt)}</p>
+                  <p className={styles.jobMeta}> {job.location} · {job.category} · {timeAgo(job.createdAt)}</p>
                 </div>
                 <div className={styles.jobRight}>
                   <span className={`${styles.jobBadge} ${job.type === 'formal' ? styles.formal : styles.informal}`}>{job.type}</span>

@@ -71,7 +71,7 @@ export const CandidateProfilePage = () => {
       <form className={styles.form} onSubmit={handleSave}>
         <div className={styles.formHeader}>
           <h1 className={styles.formTitle}>Mi perfil</h1>
-          {saved && <span className={styles.savedBadge}>✅ Guardado</span>}
+          {saved && <span className={styles.savedBadge}> Guardado</span>}
         </div>
 
         <section className={styles.section}>

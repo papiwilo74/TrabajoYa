@@ -52,7 +52,7 @@ export const ApplicationModal = ({ job, onClose }) => {
                 <p className={styles.modalLabel}>Postulación para</p>
                 <h2 className={styles.modalTitle}>{job.title}</h2>
                 <div className={styles.modalMeta}>
-                  <span className={styles.metaTag}>📍 {job.location}</span>
+                  <span className={styles.metaTag}> {job.location}</span>
                   {job.salary && (
                     <span className={styles.metaTag}>
                        ${Number(job.salary).toLocaleString('es-CO')}
