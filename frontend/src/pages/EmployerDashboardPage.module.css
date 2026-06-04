@@ -56,6 +56,7 @@
   display: flex; align-items: center; gap: 1rem;
   transition: box-shadow var(--transition), transform var(--transition);
   animation: cardIn 0.3s ease both;
+  cursor: pointer;
 }
 .jobRow:hover { box-shadow: var(--card-shadow-hover); transform: translateX(3px); }
 
@@ -68,6 +69,22 @@
 .jobTitle { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.2rem; }
 .jobMeta { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .jobRight { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
+
+.appsCount {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.jobRow:hover .appsCount {
+  background: rgba(255, 87, 51, 0.1);
+  color: var(--brand-primary);
+}
 
 .jobBadge { padding: 0.15rem 0.55rem; border-radius: var(--radius-pill); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .formal { background: #E8F5E9; color: #2E7D32; }

@@ -28,7 +28,7 @@ export class JobRepository {
   async findAll() {
     const { data, error } = await supabase
       .from('jobs')
-      .select('*')
+      .select('*, applications(id)')
       .eq('status', 'open')
       .order('created_at', { ascending: false });
 
@@ -84,6 +84,7 @@ export class JobRepository {
       salary:      row.salary,
       status:      row.status,
       createdAt:   row.created_at,
+      applicationsCount: row.applications ? row.applications.length : 0,
     };
   }
 }

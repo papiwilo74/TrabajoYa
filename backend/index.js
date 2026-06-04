@@ -8,6 +8,7 @@ import { ApplicationRepository } from './src/infrastructure/repositories/Applica
 import { CreateJob }             from './src/application/use-cases/CreateJob.js';
 import { GetJobs }               from './src/application/use-cases/GetJobs.js';
 import { CreateApplication }     from './src/application/use-cases/CreateApplication.js';
+import { GetApplicationsByJobId } from './src/application/use-cases/GetApplicationsByJobId.js';
 import { JobController }         from './src/infrastructure/http/JobController.js';
 
 // ── Validar variables de entorno al arrancar ──────────────────────────────────
@@ -15,7 +16,7 @@ const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_SERVICE_KEY'];
 const missingVars = requiredEnvVars.filter((v) => !process.env[v]);
 
 if (missingVars.length > 0) {
-  console.error('❌ Faltan variables de entorno:', missingVars.join(', '));
+  console.error(' Faltan variables de entorno:', missingVars.join(', '));
   console.error('   Crea el archivo backend/.env copiando backend/.env.example');
   console.error('   y rellena los valores de tu proyecto en Supabase.');
   process.exit(1);
@@ -48,6 +49,7 @@ const applicationRepository    = new ApplicationRepository();
 const createJobUseCase         = new CreateJob(jobRepository);
 const getJobsUseCase           = new GetJobs(jobRepository);
 const createApplicationUseCase = new CreateApplication(applicationRepository, jobRepository);
+const getApplicationsByJobIdUseCase = new GetApplicationsByJobId(applicationRepository);
 const jobController            = new JobController(createJobUseCase, getJobsUseCase);
 
 // Exponemos el repositorio en el use-case para poder usarlo en getJobById
@@ -79,6 +81,24 @@ app.get('/api/jobs',     (req, res) => jobController.getJobs(req, res));
 app.post('/api/jobs',    (req, res) => jobController.createJob(req, res));
 app.get('/api/jobs/:id', (req, res) => jobController.getJobById(req, res));
 
+app.get('/api/jobs/:id/applications', async (req, res) => {
+  try {
+    const apps = await getApplicationsByJobIdUseCase.execute(req.params.id);
+    const mapped = apps.map(a => ({
+      id: a.id,
+      jobId: a.job_id,
+      candidateName: a.candidate_name,
+      candidateEmail: a.candidate_email,
+      candidatePhone: a.candidate_phone,
+      message: a.message,
+      createdAt: a.created_at
+    }));
+    res.json(mapped);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Postulaciones
 app.post('/api/applications', async (req, res) => {
   try {
@@ -93,9 +113,9 @@ app.post('/api/applications', async (req, res) => {
 const PORT = process.env.PORT ?? 3000;
 
 app.listen(PORT, () => {
-  console.log(`✅ Backend corriendo en http://localhost:${PORT}`);
-  console.log(`🔍 Verifica la conexión con Supabase abriendo:`);
+  console.log(` Backend corriendo en http://localhost:${PORT}`);
+  console.log(` Verifica la conexión con Supabase abriendo:`);
   console.log(`   http://localhost:${PORT}/api/health`);
-  console.log(`📋 Para ver las vacantes:`);
+  console.log(` Para ver las vacantes:`);
   console.log(`   http://localhost:${PORT}/api/jobs`);
 });

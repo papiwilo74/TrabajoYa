@@ -7,6 +7,7 @@ import { JobSearchPage } from '../pages/JobSearchPage';
 import { CreateJobPage } from '../pages/CreateJobPage';
 import { CandidateProfilePage } from '../pages/CandidateProfilePage';
 import { EmployerDashboardPage } from '../pages/EmployerDashboardPage';
+import { CandidateApplicationsPage } from '../pages/CandidateApplicationsPage';
 
 export const App = () => {
   return (
@@ -17,7 +18,7 @@ export const App = () => {
 
           <Route path="/candidato" element={<CandidateLayout />}>
             <Route path="buscar" element={<JobSearchPage />} />
-            <Route path="mis-postulaciones" element={<h3 style={{padding:'2rem'}}>Próximamente</h3>} />
+            <Route path="mis-postulaciones" element={<CandidateApplicationsPage />} />
             <Route path="perfil" element={<CandidateProfilePage />} />
           </Route>
 

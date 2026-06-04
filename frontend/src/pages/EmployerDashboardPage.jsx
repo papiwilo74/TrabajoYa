@@ -1,5 +1,6 @@
 // frontend/src/pages/EmployerDashboardPage.jsx
 import { useEffect, useState } from 'react';
+import { CandidateListModal } from '../components/CandidateListModal';
 import styles from './EmployerDashboardPage.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -18,6 +19,7 @@ const StatCard = ({ icon, label, value, sub, color }) => (
 export const EmployerDashboardPage = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeJob, setActiveJob] = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/jobs`)
@@ -92,7 +94,15 @@ export const EmployerDashboardPage = () => {
         ) : (
           <div className={styles.jobList}>
             {jobs.map((job, i) => (
-              <div key={job.id} className={styles.jobRow} style={{ animationDelay: `${i * 0.05}s` }}>
+              <div
+                key={job.id}
+                className={styles.jobRow}
+                style={{ animationDelay: `${i * 0.05}s` }}
+                onClick={() => setActiveJob(job)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') setActiveJob(job); }}
+              >
                 <div className={styles.jobAvatar} style={{ background: ['#FF5733','#1A1F3C','#7C3AED','#0891B2'][i % 4] }}>
                   {job.title.charAt(0).toUpperCase()}
                 </div>
@@ -101,6 +111,9 @@ export const EmployerDashboardPage = () => {
                   <p className={styles.jobMeta}> {job.location} · {job.category} · {timeAgo(job.createdAt)}</p>
                 </div>
                 <div className={styles.jobRight}>
+                  <span className={styles.appsCount} title="Candidatos postulados">
+                    👥 {job.applicationsCount ?? 0}
+                  </span>
                   <span className={`${styles.jobBadge} ${job.type === 'formal' ? styles.formal : styles.informal}`}>{job.type}</span>
                   <span className={styles.jobSalary}>{job.salary ? `$${Number(job.salary).toLocaleString('es-CO')}` : 'A convenir'}</span>
                 </div>
@@ -109,6 +122,13 @@ export const EmployerDashboardPage = () => {
           </div>
         )}
       </div>
+
+      {activeJob && (
+        <CandidateListModal
+          job={activeJob}
+          onClose={() => setActiveJob(null)}
+        />
+      )}
     </div>
   );
 };

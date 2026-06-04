@@ -1,5 +1,6 @@
 /* frontend/src/components/ApplicationModal.jsx */
 import { useState, useEffect, useRef } from 'react';
+import { createApplication } from '../services/api';
 import styles from './ApplicationModal.module.css';
 
 export const ApplicationModal = ({ job, onClose }) => {
@@ -7,6 +8,24 @@ export const ApplicationModal = ({ job, onClose }) => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [loading, setLoading] = useState(false);
   const overlayRef = useRef(null);
+
+  // Pre-fill profile from localStorage if available
+  useEffect(() => {
+    try {
+      const savedProfile = localStorage.getItem('trabajoya-profile');
+      if (savedProfile) {
+        const profile = JSON.parse(savedProfile);
+        setFormData((p) => ({
+          ...p,
+          name: profile.name || '',
+          email: profile.email || '',
+          phone: profile.phone || '',
+        }));
+      }
+    } catch (err) {
+      console.error('Error pre-filling profile:', err);
+    }
+  }, []);
 
   // Trap focus & close on Escape
   useEffect(() => {
@@ -25,10 +44,40 @@ export const ApplicationModal = ({ job, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setStep(2);
+    try {
+      // API call to backend
+      await createApplication({
+        jobId: job.id,
+        candidateName: formData.name,
+        candidateEmail: formData.email,
+        candidatePhone: formData.phone || null,
+        message: formData.message || null,
+      });
+
+      // Save to candidate's local applications history
+      try {
+        const savedApps = JSON.parse(localStorage.getItem('trabajoya-my-applications') || '[]');
+        if (!savedApps.some(a => a.jobId === job.id)) {
+          savedApps.push({
+            jobId: job.id,
+            title: job.title,
+            location: job.location,
+            type: job.type,
+            salary: job.salary,
+            appliedAt: new Date().toISOString(),
+          });
+          localStorage.setItem('trabajoya-my-applications', JSON.stringify(savedApps));
+        }
+      } catch (e) {
+        console.error('Error saving local application history:', e);
+      }
+
+      setStep(2);
+    } catch (err) {
+      alert('Hubo un error al enviar tu postulación: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOverlayClick = (e) => {
