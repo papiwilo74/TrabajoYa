@@ -1,11 +1,13 @@
 // frontend/src/layouts/EmployerLayout.jsx
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import styles from './Layout.module.css';
 
 export const EmployerLayout = () => {
   const { pathname } = useLocation();
   const { theme, toggle } = useTheme();
+  const { user, logout } = useAuth();
 
   return (
     <div className={styles.shell}>
@@ -28,9 +30,18 @@ export const EmployerLayout = () => {
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
 
-        <Link to="/candidato/buscar" className={`${styles.ctaBtn} ${styles.ctaBtnOutline}`}>
-          Ver empleos
-        </Link>
+        {user ? (
+          <>
+            <span className={styles.userInfo}>👋 {user.name}</span>
+            <button className={styles.logoutBtn} onClick={logout}>
+              Salir
+            </button>
+          </>
+        ) : (
+          <Link to="/login" className={styles.ctaBtn}>
+            Iniciar sesión
+          </Link>
+        )}
       </header>
 
       <main className={styles.main}>

@@ -36,6 +36,17 @@ export class JobRepository {
     return data.map(this._map);
   }
 
+  async findByEmployerId(employerId) {
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*, applications(id)')
+      .eq('employer_id', employerId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data.map(this._map);
+  }
+
   async findById(id) {
     const { data, error } = await supabase
       .from('jobs')

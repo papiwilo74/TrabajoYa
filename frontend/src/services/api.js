@@ -5,9 +5,17 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 async function request(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  
+  // Attach JWT token if it exists in localStorage
+  const token = localStorage.getItem('trabajoya-token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
+    headers,
   });
 
   // Para respuestas sin cuerpo (204, etc.)
