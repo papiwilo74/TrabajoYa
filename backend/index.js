@@ -46,14 +46,15 @@ app.use(
 app.use(express.json());
 
 // ── Inyección de dependencias ─────────────────────────────────────────────────
-const jobRepository            = new JobRepository();
-const applicationRepository    = new ApplicationRepository();
-const createJobUseCase         = new CreateJob(jobRepository);
-const getJobsUseCase           = new GetJobs(jobRepository);
-const createApplicationUseCase = new CreateApplication(applicationRepository, jobRepository);
+const jobRepository             = new JobRepository();
+const applicationRepository     = new ApplicationRepository();
+const userRepository             = new UserRepository();           // ← súbelo aquí
+
+const createJobUseCase           = new CreateJob(jobRepository);
+const getJobsUseCase             = new GetJobs(jobRepository);
+const createApplicationUseCase   = new CreateApplication(applicationRepository, jobRepository, userRepository); // ← userRepository al final
 const getApplicationsByJobIdUseCase = new GetApplicationsByJobId(applicationRepository);
-const userRepository           = new UserRepository();
-const jobController            = new JobController(createJobUseCase, getJobsUseCase);
+const jobController              = new JobController(createJobUseCase, getJobsUseCase);
 
 // Exponemos el repositorio en el use-case para poder usarlo en getJobById
 getJobsUseCase.jobRepository = jobRepository;
