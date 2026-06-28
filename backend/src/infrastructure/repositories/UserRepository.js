@@ -1,41 +1,43 @@
-import { supabase } from '../supabaseClient.js';
+// backend/src/infrastructure/repositories/UserRepository.js
+import { query } from '../db.js';
 
 export class UserRepository {
-  async save(user) {
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }])
-      .select()
-      .single();
 
-    if (error) throw new Error(error.message);
-    return data;
+  async save({ id, name, email, passwordHash, role }) {
+    const { rows } = await query(
+      `INSERT INTO users (id, name, email, password_hash, role)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, name, email, role, created_at`,
+      [id, name, email, passwordHash, role]
+    );
+    return this._map(rows[0]);
   }
 
   async findById(id) {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) return null;
-    return data;
+    const { rows } = await query(
+      `SELECT id, name, email, role, created_at
+       FROM users WHERE id = $1`,
+      [id]
+    );
+    return rows[0] ? this._map(rows[0]) : null;
   }
 
   async findByEmail(email) {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
+    const { rows } = await query(
+      `SELECT id, name, email, password_hash, role, created_at
+       FROM users WHERE email = $1`,
+      [email]
+    );
+    return rows[0] || null;
+  }
 
-    if (error) return null;
-    return data;
+  _map(row) {
+    return {
+      id:        row.id,
+      name:      row.name,
+      email:     row.email,
+      role:      row.role,
+      createdAt: row.created_at,
+    };
   }
 }
