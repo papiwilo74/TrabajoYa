@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import styles from './CandidateListModal.module.css';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+import { getJobApplications } from '../services/api';
 
 export const CandidateListModal = ({ job, onClose }) => {
   const [candidates, setCandidates] = useState([]);

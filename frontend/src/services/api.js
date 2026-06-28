@@ -46,3 +46,6 @@ export const createJob = (body) =>
 // ── Applications ──
 export const createApplication = (body) =>
   request('/api/applications', { method: 'POST', body: JSON.stringify(body) });
+
+export const getEmployerJobs = () => request('/api/employer/jobs');
+export const getJobApplications = (jobId) => request(`/api/jobs/${jobId}/applications`);

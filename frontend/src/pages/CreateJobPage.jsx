@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import styles from './CreateJobPage.module.css';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+import { createJob } from '../services/api';
+
 const CATEGORIES = ['general', 'tecnología', 'ventas', 'construcción', 'salud', 'educación', 'logística', 'gastronomía'];
 
 export const CreateJobPage = () => {
@@ -23,22 +24,11 @@ export const CreateJobPage = () => {
     setErrorMsg('');
 
     try {
-      const res = await fetch(`${API_URL}/api/jobs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        setStatus('success');
-        setFormData({ title: '', description: '', type: 'formal', category: 'general', location: 'Barranquilla', salary: '' });
-      } else {
-        const data = await res.json();
-        setErrorMsg(data.error ?? 'Error al publicar la vacante.');
-        setStatus('error');
-      }
-    } catch {
-      setErrorMsg('No se pudo conectar con el servidor.');
+      await createJob(formData);
+      setStatus('success');
+      setFormData({ title: '', description: '', type: 'formal', category: 'general', location: 'Barranquilla', salary: '' });
+    } catch (err) {
+      setErrorMsg(err.message ?? 'No se pudo conectar con el servidor.');
       setStatus('error');
     }
   };

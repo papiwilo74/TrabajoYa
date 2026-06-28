@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { CandidateListModal } from '../components/CandidateListModal';
 import styles from './EmployerDashboardPage.module.css';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+import { getEmployerJobs } from '../services/api';
 
 const StatCard = ({ icon, label, value, sub, color }) => (
   <div className={styles.statCard}>
@@ -22,8 +22,7 @@ export const EmployerDashboardPage = () => {
   const [activeJob, setActiveJob] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/jobs`)
-      .then(res => res.json())
+    getEmployerJobs()
       .then(data => { setJobs(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
