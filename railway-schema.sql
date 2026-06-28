@@ -2,13 +2,22 @@
 -- TrabajoYa - Schema para PostgreSQL (Railway)
 -- ============================================================
 
--- Tabla de usuarios (con auth nativo)
+-- Tabla de usuarios (con auth nativo y perfil completo)
 CREATE TABLE IF NOT EXISTS users (
   id            uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   name          text        NOT NULL,
   email         text        UNIQUE NOT NULL,
   password_hash text        NOT NULL,
   role          text        NOT NULL CHECK (role IN ('candidate', 'employer')),
+  bio           text,
+  phone         text,
+  city          text,
+  skills        text[],
+  experience    text,
+  education     text,
+  linkedin      text,
+  github        text,
+  avatar_base64 text,
   created_at    timestamptz DEFAULT NOW()
 );
 
@@ -34,6 +43,8 @@ CREATE TABLE IF NOT EXISTS applications (
   candidate_email text        NOT NULL,
   candidate_phone text,
   message         text,
+  cv_name         text,
+  cv_data         text,
   created_at      timestamptz DEFAULT NOW()
 );
 

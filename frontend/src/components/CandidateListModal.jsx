@@ -19,11 +19,7 @@ export const CandidateListModal = ({ job, onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/jobs/${job.id}/applications`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Error al obtener candidatos.');
-        return res.json();
-      })
+    getJobApplications(job.id)
       .then((data) => {
         setCandidates(data);
         setLoading(false);
@@ -103,6 +99,18 @@ export const CandidateListModal = ({ job, onClose }) => {
                       <div className={styles.messageBox}>
                         <p className={styles.messageLabel}>Mensaje del candidato:</p>
                         <p className={styles.messageContent}>{cand.message}</p>
+                      </div>
+                    )}
+                    {cand.cvData && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <a 
+                          href={cand.cvData} 
+                          download={cand.cvName || 'CV.pdf'}
+                          className={styles.link}
+                          style={{ display: 'inline-block', background: '#e0e7ff', color: '#3730a3', padding: '0.25rem 0.75rem', borderRadius: '4px', textDecoration: 'none', fontWeight: 500 }}
+                        >
+                          ⬇️ Descargar CV
+                        </a>
                       </div>
                     )}
                   </div>

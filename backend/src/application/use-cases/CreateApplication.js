@@ -23,6 +23,8 @@ export class CreateApplication {
       candidateEmail: data.candidateEmail.trim(),
       candidatePhone: data.candidatePhone?.trim() ?? null,
       message: data.message?.trim() ?? null,
+      cvName: data.cvName ?? null,
+      cvData: data.cvData ?? null,
     });
 
     // Emails en paralelo — no bloquean la respuesta

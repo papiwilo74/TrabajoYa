@@ -9,22 +9,20 @@ export const ApplicationModal = ({ job, onClose }) => {
   const [loading, setLoading] = useState(false);
   const overlayRef = useRef(null);
 
-  // Pre-fill profile from localStorage if available
+  const [cvFile, setCvFile] = useState(null);
+  
+  // Pre-fill profile from API
   useEffect(() => {
-    try {
-      const savedProfile = localStorage.getItem('trabajoya-profile');
-      if (savedProfile) {
-        const profile = JSON.parse(savedProfile);
-        setFormData((p) => ({
+    import('../services/api').then(({ getMyProfile }) => {
+      getMyProfile().then(profile => {
+        setFormData(p => ({
           ...p,
           name: profile.name || '',
           email: profile.email || '',
           phone: profile.phone || '',
         }));
-      }
-    } catch (err) {
-      console.error('Error pre-filling profile:', err);
-    }
+      }).catch(err => console.error('Error pre-filling profile:', err));
+    });
   }, []);
 
   // Trap focus & close on Escape
@@ -45,6 +43,19 @@ export const ApplicationModal = ({ job, onClose }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      let cvData = null;
+      let cvName = null;
+      
+      if (cvFile) {
+        // Convert to base64
+        const reader = new FileReader();
+        cvData = await new Promise((resolve) => {
+          reader.onload = (ev) => resolve(ev.target.result);
+          reader.readAsDataURL(cvFile);
+        });
+        cvName = cvFile.name;
+      }
+
       // API call to backend
       await createApplication({
         jobId: job.id,
@@ -52,6 +63,8 @@ export const ApplicationModal = ({ job, onClose }) => {
         candidateEmail: formData.email,
         candidatePhone: formData.phone || null,
         message: formData.message || null,
+        cvName,
+        cvData
       });
 
       // Save to candidate's local applications history
@@ -172,6 +185,18 @@ export const ApplicationModal = ({ job, onClose }) => {
                   placeholder="Cuéntale al empleador sobre tu experiencia y motivación…"
                   rows={4}
                 />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Adjuntar CV (PDF)</label>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  className={styles.input}
+                  onChange={(e) => setCvFile(e.target.files[0])}
+                  style={{ padding: '0.5rem', background: 'transparent', border: '1px dashed #333' }}
+                />
+                {cvFile && <span style={{ fontSize: '0.85rem', color: '#10b981', marginTop: '4px', display: 'block' }}>📄 {cvFile.name} seleccionado</span>}
               </div>
 
               <div className={styles.formFooter}>

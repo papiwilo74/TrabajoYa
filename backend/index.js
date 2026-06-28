@@ -186,6 +186,28 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// ── Rutas de Usuario (Perfil) ────────────────────────────────────────────────
+app.get('/api/users/profile', authenticateToken, async (req, res) => {
+  // Ya tenemos req.user gracias al middleware, pero traemos datos frescos
+  try {
+    const user = await userRepository.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+    // Remove password_hash already handled by repository
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/users/profile', authenticateToken, async (req, res) => {
+  try {
+    const updatedUser = await userRepository.update(req.user.id, req.body);
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ── Rutas de Empleos (Jobs) ───────────────────────────────────────────────────
 app.get('/api/jobs',     (req, res) => jobController.getJobs(req, res));
 app.get('/api/jobs/:id', (req, res) => jobController.getJobById(req, res));
@@ -235,6 +257,8 @@ app.get('/api/jobs/:id/applications', authenticateToken, async (req, res) => {
       candidateEmail: a.candidate_email,
       candidatePhone: a.candidate_phone,
       message: a.message,
+      cvName: a.cv_name,
+      cvData: a.cv_data,
       createdAt: a.created_at
     }));
     res.json(mapped);

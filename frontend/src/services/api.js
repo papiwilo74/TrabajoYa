@@ -43,9 +43,15 @@ export const getJobById = (id) => request(`/api/jobs/${id}`);
 export const createJob = (body) =>
   request('/api/jobs', { method: 'POST', body: JSON.stringify(body) });
 
+// ── Users (Profile) ──
+export const getMyProfile = () => request('/api/users/profile');
+export const updateProfile = (data) =>
+  request('/api/users/profile', { method: 'PUT', body: JSON.stringify(data) });
+
 // ── Applications ──
 export const createApplication = (body) =>
   request('/api/applications', { method: 'POST', body: JSON.stringify(body) });
 
 export const getEmployerJobs = () => request('/api/employer/jobs');
 export const getJobApplications = (jobId) => request(`/api/jobs/${jobId}/applications`);
+

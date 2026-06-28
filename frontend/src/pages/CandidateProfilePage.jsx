@@ -1,5 +1,6 @@
 // frontend/src/pages/CandidateProfilePage.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getMyProfile, updateProfile } from '../services/api';
 import styles from './CandidateProfilePage.module.css';
 
 const SKILLS_SUGGESTIONS = ['JavaScript','React','Node.js','Python','SQL','Diseño UX','Excel','Inglés','Ventas','Atención al cliente','Construcción','Electricidad','Contabilidad','Marketing'];
@@ -7,10 +8,24 @@ const SKILLS_SUGGESTIONS = ['JavaScript','React','Node.js','Python','SQL','Dise�
 export const CandidateProfilePage = () => {
   const [profile, setProfile] = useState({
     name: '', email: '', phone: '', city: 'Barranquilla',
-    bio: '', skills: [], experience: '', education: ''
+    bio: '', skills: [], experience: '', education: '',
+    linkedin: '', github: '', avatarBase64: ''
   });
+  const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
   const [skillInput, setSkillInput] = useState('');
+
+  useEffect(() => {
+    getMyProfile()
+      .then(data => {
+        setProfile(prev => ({ ...prev, ...data }));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleChange = e => setProfile(p => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -24,11 +39,26 @@ export const CandidateProfilePage = () => {
 
   const removeSkill = (skill) => setProfile(p => ({ ...p, skills: p.skills.filter(s => s !== skill) }));
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    localStorage.setItem('trabajoya-profile', JSON.stringify(profile));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await updateProfile(profile);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Error al guardar el perfil');
+    }
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setProfile(p => ({ ...p, avatarBase64: ev.target.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const completeness = [profile.name, profile.email, profile.phone, profile.bio, profile.skills.length > 0, profile.experience, profile.education]
@@ -40,9 +70,14 @@ export const CandidateProfilePage = () => {
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <div className={styles.avatarWrap}>
-          <div className={styles.avatarBig}>
-            {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
-          </div>
+          <label className={styles.avatarBig} style={{ cursor: 'pointer', overflow: 'hidden' }} title="Cambiar foto de perfil">
+            {profile.avatarBase64 ? (
+              <img src={profile.avatarBase64} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              profile.name ? profile.name.charAt(0).toUpperCase() : '?'
+            )}
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+          </label>
           <h2 className={styles.profileName}>{profile.name || 'Tu nombre'}</h2>
           <p className={styles.profileCity}> {profile.city}</p>
         </div>
@@ -137,8 +172,22 @@ export const CandidateProfilePage = () => {
 
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Educación</h3>
-          <textarea className={`${styles.input} ${styles.textarea}`} name="education" value={profile.education} onChange={handleChange}
+          <textarea className={`${styles.input} ${styles.textarea}`} name="education" value={profile.education || ''} onChange={handleChange}
             placeholder="Ej. Técnico en Sistemas — SENA 2022" rows={3} />
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Redes y Portafolio</h3>
+          <div className={styles.grid2}>
+            <div className={styles.field}>
+              <label className={styles.label}>LinkedIn (URL)</label>
+              <input className={styles.input} type="url" name="linkedin" value={profile.linkedin || ''} onChange={handleChange} placeholder="https://linkedin.com/in/tu-perfil" />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>GitHub (URL)</label>
+              <input className={styles.input} type="url" name="github" value={profile.github || ''} onChange={handleChange} placeholder="https://github.com/tu-usuario" />
+            </div>
+          </div>
         </section>
 
         <button type="submit" className={styles.saveBtn}>Guardar perfil</button>
